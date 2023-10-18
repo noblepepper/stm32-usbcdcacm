@@ -29,9 +29,6 @@
 #include "cdcacm.h"
 #include "usbuart.h"
 
-#define USBUART_TIMER_FREQ_HZ 1000000U /* 1us per tick */
-#define USBUART_RUN_FREQ_HZ 5000U /* 200us (or 100 characters at 2Mbps) */
-
 #define FIFO_SIZE 128
 
 /* RX Fifo buffer */
@@ -162,6 +159,7 @@ void usbuart_set_line_coding(struct usb_cdc_line_coding *coding, int USBUSART)
 	}
 }
 
+/* incoming data from usb host to us */
 static void usbuart_usb_out_cb(int USBUSART, usbd_device *dev, uint8_t ep, int CDCACM_UART_ENDPOINT)
 {
 	(void)ep;
@@ -181,7 +179,7 @@ void usbuart3_usb_out_cb(usbd_device *dev, uint8_t ep)
     usbuart_usb_out_cb(USART3, dev, ep, 3);
 }
 
-
+/* sends data out from us to the usb host*/
 void usbuart_usb_in_cb(usbd_device *dev, uint8_t ep)
 {
 	(void) dev;

@@ -27,14 +27,12 @@
 int
 main(int argc, char **argv)
 {
-#if defined(LIBFTDI)
-	platform_init(argc, argv);
-#else
 	(void) argc;
 	(void) argv;
-	platform_init();
-#endif
-
+	clock_setup();
+	gpio_setup();
+	cdcacm_init();
+	usbuart_init();
 	while (true) {
         asm("nop");
 	}

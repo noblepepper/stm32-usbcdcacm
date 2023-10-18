@@ -30,6 +30,7 @@
 #include <stddef.h>
 #include <inttypes.h>
 
+#include "setup.h"
 #include "platform.h"
 
 #ifndef DEBUG
