@@ -23,12 +23,19 @@
 #include <libopencm3/usb/usbd.h>
 #include <libopencm3/usb/cdc.h>
 
+extern char buf_usb_in[256];
+extern int usb_data_count;
+
+uint16_t usb_recv_blocking(void);
+void usb_send_blocking(uint16_t data);
+
+bool usb_data_waiting(void);
+bool usart_data_waiting(uint32_t port);
+
 void usbuart_init(void);
 
 void usbuart_set_line_coding(struct usb_cdc_line_coding *coding, int USBUSART);
-void usbuart1_usb_out_cb(usbd_device *dev, uint8_t ep);
-void usbuart2_usb_out_cb(usbd_device *dev, uint8_t ep);
-void usbuart3_usb_out_cb(usbd_device *dev, uint8_t ep);
-void usbuart_usb_in_cb(usbd_device *dev, uint8_t ep);
+void read_from_usb(usbd_device *dev, uint8_t ep);
+void send_to_usb(usbd_device *dev, uint8_t ep);
 
 #endif

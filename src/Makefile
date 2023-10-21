@@ -7,8 +7,8 @@ endif
 
 OPT_FLAGS ?= -O2
 
-CFLAGS += -Wall -Wextra -Werror -Wno-char-subscripts\
-# CFLAGS += -Wall -Wextra -Wno-char-subscripts\
+# CFLAGS += -Wall -Wextra -Werror -Wno-char-subscripts\
+CFLAGS += -Wall -Wextra -Wno-char-subscripts\
 	$(OPT_FLAGS) -std=gnu99 -g3 -MD \
 	-I.
 LDFLAGS += $(OPT_FLAGS)
@@ -21,7 +21,7 @@ SRC =			\
 	main.c		\
 	setup.c	\
 	cdcacm.c	\
-	usbuart.c	\
+	cdcacmwrap.c	\
 
 CROSS_COMPILE ?= arm-none-eabi-
 CC = $(CROSS_COMPILE)gcc

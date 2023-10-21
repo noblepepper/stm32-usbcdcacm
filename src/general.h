@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include <libopencm3/stm32/usart.h>
 
 #include "setup.h"
 #include "platform.h"
@@ -37,6 +38,8 @@
 #include <stdio.h>
 #define DEBUG	printf
 #endif
+
+
 
 #endif
 

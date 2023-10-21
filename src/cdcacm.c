@@ -26,7 +26,7 @@
 
 #include "general.h"
 #include "cdcacm.h"
-#include "usbuart.h"
+#include "cdcacmwrap.h"
 
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/usb/usbd.h>
@@ -59,7 +59,7 @@ static const struct usb_device_descriptor dev = {
 };
 
 /* Serial ACM interfaces */
-static const struct usb_endpoint_descriptor uart_comm_endp3[] = {{
+static const struct usb_endpoint_descriptor uart_comm_endp[] = {{
 	.bLength = USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType = USB_DT_ENDPOINT,
 	.bEndpointAddress = 0x84,
@@ -68,7 +68,7 @@ static const struct usb_endpoint_descriptor uart_comm_endp3[] = {{
 	.bInterval = 255,
 }};
 
-static const struct usb_endpoint_descriptor uart_data_endp3[] = {{
+static const struct usb_endpoint_descriptor uart_data_endp[] = {{
 	.bLength = USB_DT_ENDPOINT_SIZE,
 	.bDescriptorType = USB_DT_ENDPOINT,
 	.bEndpointAddress = 0x03,
@@ -90,7 +90,7 @@ static const struct {
 	struct usb_cdc_call_management_descriptor call_mgmt;
 	struct usb_cdc_acm_descriptor acm;
 	struct usb_cdc_union_descriptor cdc_union;
-} __attribute__((packed)) uart_cdcacm_functional_descriptors3 = {
+} __attribute__((packed)) uart_cdcacm_functional_descriptor = {
 	.header = {
 		.bFunctionLength = sizeof(struct usb_cdc_header_descriptor),
 		.bDescriptorType = CS_INTERFACE,
@@ -120,7 +120,7 @@ static const struct {
 	 }
 };
 
-static const struct usb_interface_descriptor uart_comm_iface3[] = {{
+static const struct usb_interface_descriptor uart_comm_iface[] = {{
 	.bLength = USB_DT_INTERFACE_SIZE,
 	.bDescriptorType = USB_DT_INTERFACE,
 	.bInterfaceNumber = 2,
@@ -131,13 +131,13 @@ static const struct usb_interface_descriptor uart_comm_iface3[] = {{
 	.bInterfaceProtocol = USB_CDC_PROTOCOL_AT,
 	.iInterface = 5,
 
-	.endpoint = uart_comm_endp3,
+	.endpoint = uart_comm_endp,
 
-	.extra = &uart_cdcacm_functional_descriptors3,
-	.extralen = sizeof(uart_cdcacm_functional_descriptors3)
+	.extra = &uart_cdcacm_functional_descriptor,
+	.extralen = sizeof(uart_cdcacm_functional_descriptor)
 }};
 
-static const struct usb_interface_descriptor uart_data_iface3[] = {{
+static const struct usb_interface_descriptor uart_data_iface[] = {{
 	.bLength = USB_DT_INTERFACE_SIZE,
 	.bDescriptorType = USB_DT_INTERFACE,
 	.bInterfaceNumber = 3,
@@ -148,7 +148,7 @@ static const struct usb_interface_descriptor uart_data_iface3[] = {{
 	.bInterfaceProtocol = 0,
 	.iInterface = 0,
 
-	.endpoint = uart_data_endp3,
+	.endpoint = uart_data_endp,
 }};
 
 static const struct usb_iface_assoc_descriptor uart_assoc3 = {
@@ -166,10 +166,10 @@ static const struct usb_iface_assoc_descriptor uart_assoc3 = {
 static const struct usb_interface ifaces[] = {{
 	.num_altsetting = 1,
 	.iface_assoc = &uart_assoc3,
-	.altsetting = uart_comm_iface3,
+	.altsetting = uart_comm_iface,
 }, {
 	.num_altsetting = 1,
-	.altsetting = uart_data_iface3,
+	.altsetting = uart_data_iface,
 }, };
 
 static const struct usb_config_descriptor config = {
@@ -256,9 +256,9 @@ static void cdcacm_set_config(usbd_device *dev, uint16_t wValue)
 
 	/* Serial interface */
 	usbd_ep_setup(dev, 0x03, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, usbuart3_usb_out_cb);
+	              CDCACM_PACKET_SIZE, read_from_usb);
 	usbd_ep_setup(dev, 0x83, USB_ENDPOINT_ATTR_BULK,
-	              CDCACM_PACKET_SIZE, usbuart_usb_in_cb);
+	              CDCACM_PACKET_SIZE, send_to_usb);
 	usbd_ep_setup(dev, 0x84, USB_ENDPOINT_ATTR_INTERRUPT, 16, NULL);
 
 	usbd_register_control_callback(dev,

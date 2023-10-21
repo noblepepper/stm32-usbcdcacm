@@ -23,17 +23,22 @@
  */
 
 #include "general.h"
+#include "cdcacmwrap.h"
 
-int
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	(void) argc;
 	(void) argv;
+
 	clock_setup();
 	gpio_setup();
 	cdcacm_init();
 	usbuart_init();
 	while (true) {
+		if (usb_data_waiting())
+			usart_send_blocking(USART3, usb_recv_blocking());
+		if (usart_data_waiting(USART3))
+			usb_send_blocking(usart_recv(USART3));
         asm("nop");
 	}
 

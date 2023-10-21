@@ -3,7 +3,7 @@
 #define __SETUP_H
 
 #include "cdcacm.h"
-#include "usbuart.h"
+#include "cdcacmwrap.h"
 
 void clock_setup(void);
 void gpio_setup(void);
